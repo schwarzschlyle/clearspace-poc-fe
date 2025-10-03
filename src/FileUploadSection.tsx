@@ -52,87 +52,139 @@ const FileUploadSection: React.FC<FileUploadSectionProps> = ({
         height: "100%",
         background: "#2c7083",
         p: 0,
+        overflow: "hidden",
       }}
     >
-      <Box sx={{ width: "100%", display: "flex", alignItems: "flex-start", justifyContent: "flex-start", mt: 3, mb: 2, ml: 3 }}>
+      {/* Always show logo in upper left */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 24,
+          left: 24,
+          zIndex: 10,
+          pointerEvents: "none",
+        }}
+      >
         <img src={logo} alt="Clearspace Logo" style={{ height: 48 }} />
       </Box>
-      <Box sx={{ flex: 1, width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Paper
-          elevation={3}
+      {!previewUrl ? (
+        <Box sx={{ flex: 1, width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Paper
+            elevation={3}
+            sx={{
+              border: DROPZONE_BORDER,
+              borderRadius: 2,
+              width: 340,
+              height: 340,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "#f8f6f3",
+              cursor: "pointer",
+              position: "relative",
+              transition: "border-color 0.2s",
+            }}
+            onDrop={handleDrop}
+            onDragOver={(e) => e.preventDefault()}
+            onClick={() => inputRef.current?.click()}
+          >
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handleSelect}
+            />
+            <Typography color="textSecondary" align="center">
+              Drag & drop an image here<br />or click to select
+            </Typography>
+          </Paper>
+        </Box>
+      ) : (
+        <Box
           sx={{
-            border: DROPZONE_BORDER,
-            borderRadius: 2,
-            width: 340,
-            height: 340,
+            width: "100%",
+            height: "100%",
+            position: "relative",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            background: "#f8f6f3",
-            cursor: "pointer",
-            position: "relative",
-            transition: "border-color 0.2s",
+            overflow: "hidden",
           }}
-          onDrop={handleDrop}
-          onDragOver={(e) => e.preventDefault()}
-          onClick={() => inputRef.current?.click()}
         >
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/*"
-            style={{ display: "none" }}
-            onChange={handleSelect}
-          />
-          {!previewUrl ? (
-            <Typography color="textSecondary" align="center">
-              Drag & drop an image here<br />or click to select
-            </Typography>
-          ) : (
+          {/* Blurred border effect using pseudo-background */}
+          <Box
+            sx={{
+              width: "60%",
+              height: "60%",
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 2,
+            }}
+          >
+            <img
+              src={previewUrl}
+              alt="Preview"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "fill",
+                borderRadius: 16,
+                boxShadow: "0 0 32px 0 rgba(44,112,131,0.15)",
+                opacity: 0.85,
+                background: "#222",
+                display: "block",
+                position: "relative",
+                zIndex: 2,
+              }}
+            />
+            {/* Tapered gradient border overlay */}
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
+                pointerEvents: "none",
+                position: "absolute",
+                top: 0,
+                left: 0,
                 width: "100%",
+                height: "100%",
+                borderRadius: 16,
+                zIndex: 3,
+                background: `radial-gradient(circle, rgba(44,112,131,0) 60%, rgba(44,112,131,0.15) 80%, rgba(44,112,131,0.35) 100%)`,
+              }}
+            />
+            <Button
+              variant="contained"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleIdentify();
+              }}
+              disabled={identifyMutation.status === "pending"}
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                zIndex: 4,
+                width: "70%",
+                backgroundColor: "#2c7083",
+                "&:hover": {
+                  backgroundColor: "#25606f",
+                },
               }}
             >
-              <img
-                src={previewUrl}
-                alt="Preview"
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: 220,
-                  marginBottom: 16,
-                  borderRadius: 8,
-                }}
-              />
-              <Button
-                variant="contained"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleIdentify();
-                }}
-                disabled={identifyMutation.status === "pending"}
-                sx={{
-                  width: "80%",
-                  backgroundColor: "#2c7083",
-                  "&:hover": {
-                    backgroundColor: "#25606f",
-                  },
-                }}
-              >
-                {identifyMutation.status === "pending" ? (
-                  <CircularProgress size={24} color="inherit" />
-                ) : (
-                  "IDENTIFY"
-                )}
-              </Button>
-            </Box>
-          )}
-        </Paper>
-      </Box>
+              {identifyMutation.status === "pending" ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "IDENTIFY"
+              )}
+            </Button>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 };
