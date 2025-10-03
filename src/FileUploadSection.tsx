@@ -65,7 +65,17 @@ const FileUploadSection: React.FC<FileUploadSectionProps> = ({
           pointerEvents: "none",
         }}
       >
-        <img src={logo} alt="Clearspace Logo" style={{ height: 48 }} />
+        <img
+          src={logo}
+          alt="Clearspace Logo"
+          style={{
+            height: 48,
+            border: "3px solid #d8ccc0",
+            borderRadius: 12,
+            background: "#fff",
+            boxSizing: "border-box",
+          }}
+        />
       </Box>
       {!previewUrl ? (
         <Box sx={{ flex: 1, width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
