@@ -6,7 +6,6 @@ import AssetDescriptionSection from "./AssetDescriptionSection";
 
 const BG_COLOR = "#d8ccc0";
 const DIVIDER_COLOR = "#2c7083";
-const HEADER_HEIGHT = 64;
 
 const queryClient = new QueryClient();
 
