@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-import Header from "./Header";
 import { Box, Divider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import FileUploadSection from "./FileUploadSection";
@@ -48,11 +47,10 @@ function App() {
           overflowX: "hidden",
         }}
       >
-        <Header />
         <Box
           sx={{
             position: "relative",
-            height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+            height: "100vh",
             width: "100vw",
             minWidth: 0,
             overflowX: "hidden",
