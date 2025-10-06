@@ -4,13 +4,15 @@ import { useIdentify } from "../lib/hooks/useIdentify";
 
 const DROPZONE_BORDER = "2px dotted #2c7083";
 
+import type { IdentifyAssetResponse, IdentifyAssetError } from "../lib/hooks/useIdentify";
+
 interface FileUploadSectionProps {
   file: File | null;
   previewUrl: string | null;
   inputRef: React.RefObject<HTMLInputElement>;
   handleDrop: (e: React.DragEvent) => void;
   handleSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  setResult: (r: any) => void;
+  setResult: (r: IdentifyAssetResponse | IdentifyAssetError) => void;
 }
 
 import logo from "./assets/clearspace-logo.png";

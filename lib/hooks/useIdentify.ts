@@ -5,7 +5,7 @@ export interface IdentifyAssetResponse {
   manufacturer: string;
   model: string;
   confidence_score: number;
-  additional_details?: Record<string, any>;
+  additional_details?: Record<string, unknown>;
 }
 
 export interface IdentifyAssetError {
