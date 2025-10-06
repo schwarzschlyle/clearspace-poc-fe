@@ -3,7 +3,7 @@ import { Box, Divider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import FileUploadSection from "./FileUploadSection";
 import AssetDescriptionSection from "./AssetDescriptionSection";
-import type { IdentifyAssetResponse } from "../lib/hooks/useIdentify";
+import type { IdentifyAssetResponse, IdentifyAssetError } from "../lib/hooks/useIdentify";
 
 const BG_COLOR = "#d8ccc0";
 const DIVIDER_COLOR = "#2c7083";
@@ -13,7 +13,7 @@ const queryClient = new QueryClient();
 function App() {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [result, setResult] = useState<IdentifyAssetResponse | null>(null);
+  const [result, setResult] = useState<IdentifyAssetResponse | IdentifyAssetError | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Handlers that do not depend on TanStack Query

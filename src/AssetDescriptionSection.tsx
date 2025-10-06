@@ -23,10 +23,10 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
-import type { IdentifyAssetResponse } from "../lib/hooks/useIdentify";
+import type { IdentifyAssetResponse, IdentifyAssetError } from "../lib/hooks/useIdentify";
 
 interface AssetDescriptionSectionProps {
-  result: IdentifyAssetResponse | null;
+  result: IdentifyAssetResponse | IdentifyAssetError | null;
 }
 
 function getConfidenceColor(confidence: number) {
@@ -104,11 +104,51 @@ const AssetDescriptionSection: React.FC<AssetDescriptionSectionProps> = ({ resul
     );
   }
 
-  // Merge top-level and additional_details
+  // Error handling: IdentifyAssetError
+  if ("detail" in result && Array.isArray(result.detail)) {
+    return (
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          p: 2,
+          minWidth: 0,
+        }}
+      >
+        <Card sx={{ width: "90%", minHeight: 340, display: "flex", alignItems: "center", justifyContent: "center", background: "#fff0f0" }}>
+          <CardContent>
+            <Typography color="error" align="center" sx={{ fontWeight: 700 }}>
+              Error
+            </Typography>
+            {result.detail.map((err, idx) => (
+              <Typography key={idx} color="error" align="center" variant="body2">
+                {err.msg}
+              </Typography>
+            ))}
+          </CardContent>
+        </Card>
+      </Box>
+    );
+  }
+
   // Merge top-level and additional_details (type safe)
   let details: Record<string, unknown> = { ...result };
-  if (result && typeof result.additional_details === "object" && result.additional_details !== null) {
-    details = { ...result, ...result.additional_details };
+  // Only merge additional_details if result is IdentifyAssetResponse
+  const isIdentifyAssetResponse =
+    result &&
+    typeof result === "object" &&
+    "request_id" in result &&
+    "manufacturer" in result &&
+    "model" in result &&
+    "confidence_score" in result;
+  if (
+    isIdentifyAssetResponse &&
+    typeof (result as IdentifyAssetResponse).additional_details === "object" &&
+    (result as IdentifyAssetResponse).additional_details !== null
+  ) {
+    details = { ...result, ...(result as IdentifyAssetResponse).additional_details };
   }
 
   // Compose header
